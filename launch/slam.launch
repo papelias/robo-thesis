@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="geotiff_map_file_path" default="$(find robo_thesis)/maps"/>
+  
+  <include file="$(find robo_thesis)/launch/default_mapping.launch" />
+
+  <node pkg="tf" type="static_transform_publisher" name="map_2_odom" args="0 0 0 0 0 0 map odom 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="odom_2_base_footprint" args="0 0 0 0 0 0 odom base_footprint 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="odom_2_base_base_link" args="0 0 0 0 0 0 odom base_link 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="odom_2_base_base_stabilized" args="0 0 0 0 0 0 odom base_stabilized 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="odom_2_base_base_footprint" args="0 0 0 0 0 0 odom base_footprint 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="base_link_2_laser" args="0 0 0 0 0 0 base_link laser 100"/> 
+  
+  <include file="$(find rplidar_ros)/launch/rplidar.launch" />
+
+  <node pkg="rviz" type="rviz" name="rviz"
+    args="-d $(find robo_thesis)/rviz_cfg/default_mapping.rviz"/>
+
+  <include file="$(find hector_geotiff)/launch/geotiff_mapper.launch">
+    <arg name="trajectory_source_frame_name" value="scanmatcher_frame"/>
+    <arg name="map_file_path" value="$(arg geotiff_map_file_path)"/>
+  </include>
+
+</launch>	
